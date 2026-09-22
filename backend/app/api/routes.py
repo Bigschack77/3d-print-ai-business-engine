@@ -40,15 +40,10 @@ def create_opportunity(payload: OpportunityCreate, db: Session = Depends(get_db)
         notes=payload.notes,
     )
 
-    material_cost = payload.material_weight_grams * 0.18
-    production_cost = material_cost + (payload.print_time_hours * 0.08) + 10
-    profit = payload.selling_price - production_cost - 8
-    score = score_opportunity(85, 70, 80, 82, 75, 78, 88)
-
-    item.material_cost = material_cost
-    item.production_cost = production_cost
-    item.estimated_profit = profit
-    item.opportunity_score = float(score["total"])
+    item.material_cost = payload.material_weight_grams * 0.18
+    item.production_cost = item.material_cost + (payload.print_time_hours * 0.08) + 10
+    item.estimated_profit = payload.selling_price - item.production_cost - 8
+    item.opportunity_score = 80.0
     item.status = "ANALYSED"
 
     db.add(item)

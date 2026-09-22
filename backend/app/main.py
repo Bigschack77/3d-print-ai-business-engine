@@ -6,6 +6,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from app.api.routes import api_router
 from app.core.config import settings
 from app.core.database import create_db_and_tables
+from app.services.seed_data import seed_data
 
 app = FastAPI(title="3D Print AI Business Engine", version="0.1.0")
 
@@ -18,6 +19,7 @@ app.add_middleware(
 )
 
 create_db_and_tables()
+seed_data()
 
 app.include_router(api_router)
 

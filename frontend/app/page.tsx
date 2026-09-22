@@ -1,24 +1,73 @@
-from __future__ import annotations
+'use client';
 
-from typing import ReactNode
+import { useMemo, useState } from 'react';
 
-const initialPrinters = [
+type Printer = {
+  id: number;
+  name: string;
+  manufacturer: string;
+  model: string;
+  hourlyCost: number;
+};
+
+type Material = {
+  id: number;
+  brand: string;
+  materialType: string;
+  colour: string;
+  pricePerKg: number;
+};
+
+type Product = {
+  id: number;
+  name: string;
+  status: string;
+  score: number;
+  profit: number;
+  sellingPrice: number;
+  materialWeight: number;
+  printTime: number;
+  category: string;
+};
+
+const initialPrinters: Printer[] = [
   { id: 1, name: 'Bambu Lab X1C', manufacturer: 'Bambu Lab', model: 'X1C', hourlyCost: 3.5 },
   { id: 2, name: 'Creality K1 Max', manufacturer: 'Creality', model: 'K1 Max', hourlyCost: 2.8 },
 ];
 
-const initialMaterials = [
+const initialMaterials: Material[] = [
   { id: 1, brand: 'Bambu', materialType: 'PLA', colour: 'Black', pricePerKg: 180 },
   { id: 2, brand: 'Prusa', materialType: 'PLA', colour: 'White', pricePerKg: 150 },
 ];
 
 export default function HomePage() {
-  const [printers, setPrinters] = useState(initialPrinters);
-  const [materials, setMaterials] = useState(initialMaterials);
-  const [products, setProducts] = useState([
-    { id: 1, name: 'Modular Desk Cable Organizer', status: 'DISCOVERED', score: 87, profit: 75, sellingPrice: 99, materialWeight: 85, printTime: 3.2, category: 'HOME OFFICE' },
-    { id: 2, name: 'Magnetic Tool Dock', status: 'TESTING', score: 81, profit: 52, sellingPrice: 89, materialWeight: 120, printTime: 4.1, category: 'WORKSHOP' },
+  const [printers, setPrinters] = useState<Printer[]>(initialPrinters);
+  const [materials, setMaterials] = useState<Material[]>(initialMaterials);
+  const [products, setProducts] = useState<Product[]>([
+    {
+      id: 1,
+      name: 'Modular Desk Cable Organizer',
+      status: 'DISCOVERED',
+      score: 87,
+      profit: 75,
+      sellingPrice: 99,
+      materialWeight: 85,
+      printTime: 3.2,
+      category: 'HOME OFFICE',
+    },
+    {
+      id: 2,
+      name: 'Magnetic Tool Dock',
+      status: 'TESTING',
+      score: 81,
+      profit: 52,
+      sellingPrice: 89,
+      materialWeight: 120,
+      printTime: 4.1,
+      category: 'WORKSHOP',
+    },
   ]);
+
   const [printerForm, setPrinterForm] = useState({ name: '', manufacturer: '', model: '', hourlyCost: '3.0' });
   const [materialForm, setMaterialForm] = useState({ brand: '', materialType: 'PLA', colour: 'Natural', pricePerKg: '180' });
   const [opportunityForm, setOpportunityForm] = useState({
@@ -99,7 +148,7 @@ export default function HomePage() {
       Math.max(0, Math.round((opportunitySummary.profit / Number(opportunityForm.sellingPrice || 1)) * 100 + 58)),
     );
 
-    const nextProduct = {
+    const nextProduct: Product = {
       id: Date.now(),
       name,
       status: 'ANALYSED',
@@ -271,7 +320,7 @@ function StatCard({ label, value, tone }: { label: string; value: string; tone: 
   );
 }
 
-function Field({ label, children }: { label: string; children: ReactNode }) {
+function Field({ label, children }: { label: string; children: React.ReactNode }) {
   return (
     <label className="block text-sm">
       <span className="mb-2 block text-slate-300">{label}</span>
