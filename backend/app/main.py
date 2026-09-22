@@ -1,28 +1,36 @@
 from __future__ import annotations
 
-from sqlalchemy import create_engine
-from sqlalchemy.orm import declarative_base, sessionmaker
+from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
 
+from app.api.routes import api_router
 from app.core.config import settings
+from app.core.database import create_db_and_tables
 
-connect_args = {"check_same_thread": False} if settings.database_url.startswith("sqlite") else {}
-engine = create_engine(settings.database_url, connect_args=connect_args, echo=False)
-SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
-Base = declarative_base()
+app = FastAPI(title="3D Print AI Business Engine", version="0.1.0")
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
+create_db_and_tables()
+
+app.include_router(api_router)
 
 
-def create_db_and_tables() -> None:
-    from app.models.material import Material
-    from app.models.opportunity import ProductOpportunity
-    from app.models.printer import Printer
-    from app.models.product import Product
+@app.get("/health")
+def health_check() -> dict[str, str]:
+    return {
+        "status": "ok",
+        "service": "backend",
+        "database_url": settings.database_url,
+    }
 
-    Base.metadata.create_all(bind=engine)
 
-
-def get_db():
-    db = SessionLocal()
-    try:
-        yield db
-    finally:
-        db.close()
+@app.get("/")
+def root() -> dict[str, str]:
+    return {"message": "3D Print AI Business Engine API"}

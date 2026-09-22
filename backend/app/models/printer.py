@@ -7,23 +7,18 @@ from sqlalchemy import Column, DateTime, Float, Integer, String, Text
 from app.core.database import Base
 
 
-class Material(Base):
-    __tablename__ = "materials"
+class Printer(Base):
+    __tablename__ = "printers"
 
     id = Column(Integer, primary_key=True, index=True)
-    brand = Column(String(150), nullable=False)
-    material_type = Column(String(120), default="PLA")
-    colour = Column(String(80), default="Natural")
-    price_per_kg = Column(Float, default=0.0)
-    diameter = Column(Float, default=1.75)
-    available_weight = Column(Float, default=0.0)
-    supplier = Column(String(160), default="")
-    purchase_date = Column(String(120), default="")
+    name = Column(String(255), nullable=False)
+    manufacturer = Column(String(120), default="")
+    model = Column(String(120), default="")
+    build_volume_x = Column(Float, default=0.0)
+    build_volume_y = Column(Float, default=0.0)
+    build_volume_z = Column(Float, default=0.0)
+    available = Column(Integer, default=1)
+    hourly_cost = Column(Float, default=0.0)
+    location = Column(String(120), default="")
     notes = Column(Text, default="")
     created_at = Column(DateTime, default=datetime.utcnow)
-
-    @property
-    def cost_per_gram(self) -> float:
-        if self.price_per_kg <= 0:
-            return 0.0
-        return self.price_per_kg / 1000.0

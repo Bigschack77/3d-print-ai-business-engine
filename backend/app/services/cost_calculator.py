@@ -1,70 +1,51 @@
 from __future__ import annotations
 
-from pydantic import BaseModel
+
+def calculate_material_cost(material_weight_grams: float, material_price_per_gram: float) -> float:
+    return material_weight_grams * material_price_per_gram
 
 
-class OpportunityCreate(BaseModel):
-    name: str
-    category: str = "home_office"
-    target_customer: str = "home_office"
-    demand: str = "medium"
-    competition: str = "medium"
-    material_weight_grams: float = 0.0
-    print_time_hours: float = 0.0
-    selling_price: float = 0.0
-    notes: str = ""
+def calculate_electricity_cost(
+    print_time_hours: float,
+    printer_power_kw: float,
+    electricity_price_per_kwh: float,
+) -> float:
+    return print_time_hours * printer_power_kw * electricity_price_per_kwh
 
 
-class ProductCreate(BaseModel):
-    sku: str
-    name: str
-    slug: str
-    description: str = ""
-    category: str = "home_office"
-    subcategory: str = ""
-    status: str = "DISCOVERED"
-    target_customer: str = "home_office"
-    design_status: str = "concept"
-    legal_status: str = "CLEAR"
-    market_score: float = 0.0
-    demand_score: float = 0.0
-    competition_score: float = 0.0
-    profit_score: float = 0.0
-    print_score: float = 0.0
-    personalisation_score: float = 0.0
-    trend_score: float = 0.0
-    production_score: float = 0.0
-    material_cost: float = 0.0
-    electricity_cost: float = 0.0
-    labour_cost: float = 0.0
-    packaging_cost: float = 0.0
-    shipping_cost: float = 0.0
-    marketplace_fee: float = 0.0
-    selling_price: float = 0.0
-    estimated_profit: float = 0.0
-    actual_profit: float = 0.0
+def calculate_production_cost(
+    material_weight_grams: float,
+    material_price_per_gram: float,
+    print_time_hours: float,
+    printer_power_kw: float,
+    electricity_price_per_kwh: float,
+    labour_cost: float,
+    failure_percentage: float,
+    packaging_cost: float,
+) -> dict:
+    material_cost = calculate_material_cost(material_weight_grams, material_price_per_gram)
+    electricity_cost = calculate_electricity_cost(print_time_hours, printer_power_kw, electricity_price_per_kwh)
+    failure_allowance = material_cost * (failure_percentage / 100.0)
+    production_cost = material_cost + electricity_cost + labour_cost + failure_allowance + packaging_cost
+
+    return {
+        "material_cost": round(material_cost, 2),
+        "electricity_cost": round(electricity_cost, 2),
+        "failure_allowance": round(failure_allowance, 2),
+        "production_cost": round(production_cost, 2),
+    }
 
 
-class MaterialCreate(BaseModel):
-    brand: str
-    material_type: str = "PLA"
-    colour: str = "Natural"
-    price_per_kg: float = 0.0
-    diameter: float = 1.75
-    available_weight: float = 0.0
-    supplier: str = ""
-    purchase_date: str = ""
-    notes: str = ""
+def calculate_profit(
+    selling_price: float,
+    production_cost: float,
+    marketplace_fee: float,
+    shipping_cost: float,
+) -> dict:
+    profit = selling_price - production_cost - marketplace_fee - shipping_cost
+    gross_margin = (profit / selling_price) if selling_price else 0.0
 
-
-class PrinterCreate(BaseModel):
-    name: str
-    manufacturer: str = ""
-    model: str = ""
-    build_volume_x: float = 0.0
-    build_volume_y: float = 0.0
-    build_volume_z: float = 0.0
-    available: int = 1
-    hourly_cost: float = 0.0
-    location: str = ""
-    notes: str = ""
+    return {
+        "profit": round(profit, 2),
+        "gross_margin": round(gross_margin, 4),
+    }
