@@ -1,8 +1,10 @@
 from __future__ import annotations
 
-from app.core.database import Base
-from sqlalchemy import Column, DateTime, Float, Integer, String, Text
 from datetime import datetime
+
+from sqlalchemy import Column, DateTime, Float, Integer, String, Text
+
+from app.core.database import Base
 
 
 class Material(Base):

@@ -1,28 +1,26 @@
 from __future__ import annotations
 
-from sqlalchemy import create_engine
-from sqlalchemy.orm import declarative_base, sessionmaker
+from functools import lru_cache
 
-from app.core.config import settings
-
-connect_args = {"check_same_thread": False} if settings.database_url.startswith("sqlite") else {}
-engine = create_engine(settings.database_url, connect_args=connect_args, echo=False)
-SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
-Base = declarative_base()
+from pydantic_settings import BaseSettings, SettingsConfigDict
 
 
-def create_db_and_tables() -> None:
-    from app.models.material import Material
-    from app.models.opportunity import ProductOpportunity
-    from app.models.printer import Printer
-    from app.models.product import Product
+class Settings(BaseSettings):
+    app_name: str = "3D Print AI Business Engine"
+    environment: str = "development"
+    database_url: str = "sqlite:///./app.db"
+    redis_url: str = "redis://localhost:6379/0"
+    openai_api_key: str = ""
+    azure_openai_api_key: str = ""
+    azure_openai_endpoint: str = ""
+    app_url: str = "http://localhost:3000"
 
-    Base.metadata.create_all(bind=engine)
+    model_config = SettingsConfigDict(env_file=".env", extra="ignore")
 
 
-def get_db():
-    db = SessionLocal()
-    try:
-        yield db
-    finally:
-        db.close()
+@lru_cache
+def get_settings() -> Settings:
+    return Settings()
+
+
+settings = get_settings()

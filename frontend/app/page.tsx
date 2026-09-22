@@ -1,15 +1,36 @@
-import './globals.css';
-import type { Metadata } from 'next';
+from __future__ import annotations
 
-export const metadata: Metadata = {
-  title: '3D Print AI Business Engine',
-  description: 'Business intelligence and product discovery for a 3D printing shop',
-};
+from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
 
-export default function RootLayout({ children }: { children: React.ReactNode }) {
-  return (
-    <html lang="en">
-      <body>{children}</body>
-    </html>
-  );
-}
+from app.api.routes import api_router
+from app.core.config import settings
+from app.core.database import create_db_and_tables
+
+app = FastAPI(title="3D Print AI Business Engine", version="0.1.0")
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
+create_db_and_tables()
+
+app.include_router(api_router)
+
+
+@app.get("/health")
+def health_check() -> dict[str, str]:
+    return {
+        "status": "ok",
+        "service": "backend",
+        "database_url": settings.database_url,
+    }
+
+
+@app.get("/")
+def root() -> dict[str, str]:
+    return {"message": "3D Print AI Business Engine API"}

@@ -1,4 +1,4 @@
-from backend.app.services.cost_calculator import calculate_production_cost, calculate_profit
+from app.services.cost_calculator import calculate_production_cost, calculate_profit
 
 
 def test_calculate_production_cost():

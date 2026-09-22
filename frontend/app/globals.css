@@ -122,7 +122,7 @@ export default function HomePage() {
 
   const calculateProductionCost = () => {
     const materialWeight = Number(opportunityForm.materialWeight || 0);
-    const materialPricePerGram = (Number(materialForm.pricePerKg || 180) / 1000);
+    const materialPricePerGram = Number(materialForm.pricePerKg || 180) / 1000;
     const printTimeHours = Number(opportunityForm.printTime || 0);
     const labourCost = Number(opportunityForm.labourCost || 0);
     const packagingCost = Number(opportunityForm.packagingCost || 0);

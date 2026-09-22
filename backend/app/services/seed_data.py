@@ -1,51 +1,38 @@
-from __future__ import annotations
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
 
+:root {
+  color-scheme: dark;
+}
 
-def calculate_material_cost(material_weight_grams: float, material_price_per_gram: float) -> float:
-    return material_weight_grams * material_price_per_gram
+html, body {
+  margin: 0;
+  min-height: 100%;
+  background: #020617;
+  color: #e2e8f0;
+  font-family: Arial, Helvetica, sans-serif;
+}
 
+body {
+  min-height: 100vh;
+}
 
-def calculate_electricity_cost(
-    print_time_hours: float,
-    printer_power_kw: float,
-    electricity_price_per_kwh: float,
-) -> float:
-    return print_time_hours * printer_power_kw * electricity_price_per_kwh
+.input {
+  width: 100%;
+  border-radius: 0.75rem;
+  border: 1px solid rgba(148, 163, 184, 0.35);
+  background: rgba(15, 23, 42, 0.75);
+  padding: 0.7rem 0.8rem;
+  color: white;
+  outline: none;
+}
 
+.input:focus {
+  border-color: rgba(34, 211, 238, 0.7);
+  box-shadow: 0 0 0 2px rgba(34, 211, 238, 0.15);
+}
 
-def calculate_production_cost(
-    material_weight_grams: float,
-    material_price_per_gram: float,
-    print_time_hours: float,
-    printer_power_kw: float,
-    electricity_price_per_kwh: float,
-    labour_cost: float,
-    failure_percentage: float,
-    packaging_cost: float,
-) -> dict:
-    material_cost = calculate_material_cost(material_weight_grams, material_price_per_gram)
-    electricity_cost = calculate_electricity_cost(print_time_hours, printer_power_kw, electricity_price_per_kwh)
-    failure_allowance = material_cost * (failure_percentage / 100.0)
-    production_cost = material_cost + electricity_cost + labour_cost + failure_allowance + packaging_cost
-
-    return {
-        "material_cost": round(material_cost, 2),
-        "electricity_cost": round(electricity_cost, 2),
-        "failure_allowance": round(failure_allowance, 2),
-        "production_cost": round(production_cost, 2),
-    }
-
-
-def calculate_profit(
-    selling_price: float,
-    production_cost: float,
-    marketplace_fee: float,
-    shipping_cost: float,
-) -> dict:
-    profit = selling_price - production_cost - marketplace_fee - shipping_cost
-    gross_margin = (profit / selling_price) if selling_price else 0.0
-
-    return {
-        "profit": round(profit, 2),
-        "gross_margin": round(gross_margin, 4),
-    }
+button {
+  cursor: pointer;
+}
